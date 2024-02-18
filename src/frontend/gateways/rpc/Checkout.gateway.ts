@@ -10,6 +10,9 @@ const client = new CheckoutServiceClient(CHECKOUT_SERVICE_ADDR, ChannelCredentia
 
 const CheckoutGateway = () => ({
   placeOrder(order: PlaceOrderRequest) {
+    if (order.address){
+      order.address.privateFlag = true;
+    }
     return new Promise<PlaceOrderResponse>((resolve, reject) =>
       client.placeOrder(order, (error, response) => (error ? reject(error) : resolve(response)))
     );

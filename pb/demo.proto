@@ -133,6 +133,7 @@ message Address {
     string state = 3;
     string country = 4;
     string zip_code = 5;
+    bool private_flag = 6;
 }
 
 // -----------------Currency service-----------------

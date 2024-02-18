@@ -44,6 +44,7 @@ const CartDetail = () => {
           country,
           city,
           zipCode,
+          privateFlag: true,
         },
         userCurrency: selectedCurrency,
         creditCard: {

@@ -74,7 +74,10 @@ impl ShippingService for ShippingServer {
         span.set_attribute(semcov::trace::RPC_SYSTEM.string(RPC_SYSTEM_GRPC));
 
         span.add_event("Processing get quote request".to_string(), vec![]);
-        span.set_attribute(KeyValue::new("app.shipping.zip_code", request_message.address.unwrap().zip_code));
+
+        let address = request_message.address.unwrap();
+        span.set_attribute(KeyValue::new("app.shipping.private", address.private_flag));
+        span.set_attribute(KeyValue::new("app.shipping.zip_code", address.zip_code));
 
         let cx = Context::current_with_span(span);
         let q = match create_quote_from_count(itemct)

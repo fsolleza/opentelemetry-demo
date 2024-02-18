@@ -24,6 +24,7 @@ const CartItems = ({ productList, shouldShowPrice = true }: IProps) => {
     state: 'CA',
     country: 'United States',
     zipCode: '94043',
+    privateFlag: true,
   };
 
   const { data: shippingConst = { units: 0, currencyCode: 'USD', nanos: 0 } } = useQuery(['shipping',

@@ -330,6 +330,7 @@ func (cs *checkoutService) prepareOrderItemsAndShippingQuoteFromCart(ctx context
 		attribute.Float64("app.shipping.amount", shippingCostFloat),
 		attribute.Int("app.cart.items.count", int(totalCart)),
 		attribute.Int("app.order.items.count", len(orderItems)),
+    attribute.Bool("app.order.address.privateFlag", address.PrivateFlag),
 	)
 	return out, nil
 }
