@@ -21,16 +21,19 @@ services:
   # Accounting service
   accountingservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-accountingservice
-    container_name: accounting-service
+    #container_name: accounting-service
     build:
       context: ./
       dockerfile: ./src/accountingservice/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-accountingservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 20M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     environment:
       - KAFKA_SERVICE_ADDR
@@ -48,16 +51,19 @@ services:
   # AdService
   adservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-adservice
-    container_name: ad-service
+    #container_name: ad-service
     build:
       context: ./
       dockerfile: ./src/adservice/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-adservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 300M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${AD_SERVICE_PORT}"
@@ -80,16 +86,19 @@ services:
   # Cart service
   cartservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-cartservice
-    container_name: cart-service
+    #container_name: cart-service
     build:
       context: ./
       dockerfile: ./src/cartservice/src/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-cartservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 160M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${CART_SERVICE_PORT}"
@@ -114,16 +123,19 @@ services:
   # Checkout service
   checkoutservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-checkoutservice
-    container_name: checkout-service
+    #container_name: checkout-service
     build:
       context: ./
       dockerfile: ./src/checkoutservice/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-checkoutservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 20M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${CHECKOUT_SERVICE_PORT}"
@@ -166,16 +178,19 @@ services:
   # Currency service
   currencyservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-currencyservice
-    container_name: currency-service
+    #container_name: currency-service
     build:
       context: ./
       dockerfile: ./src/currencyservice/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-currencyservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 20M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${CURRENCY_SERVICE_PORT}"
@@ -192,15 +207,18 @@ services:
   # Email service
   emailservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-emailservice
-    container_name: email-service
+    #container_name: email-service
     build:
       context: ./src/emailservice
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-emailservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 100M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${EMAIL_SERVICE_PORT}"
@@ -218,16 +236,19 @@ services:
   # Fraud Detection service
   frauddetectionservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-frauddetectionservice
-    container_name: frauddetection-service
+    #container_name: frauddetection-service
     build:
       context: ./
       dockerfile: ./src/frauddetectionservice/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-frauddetectionservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 300M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     environment:
       - FLAGD_HOST
@@ -249,16 +270,19 @@ services:
   # Frontend
   frontend:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-frontend
-    container_name: frontend
+    #container_name: frontend
     build:
       context: ./
       dockerfile: ./src/frontend/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-frontend
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 200M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${FRONTEND_PORT}"
@@ -306,7 +330,7 @@ services:
   # Frontend Proxy (Envoy)
   frontendproxy:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-frontendproxy
-    container_name: frontend-proxy
+    #container_name: frontend-proxy
     build:
       context: ./
       dockerfile: src/frontendproxy/Dockerfile
@@ -314,6 +338,7 @@ services:
       resources:
         limits:
           memory: 50M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${ENVOY_PORT}:${ENVOY_PORT}"
@@ -347,16 +372,19 @@ services:
   # Imageprovider
   imageprovider:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-imageprovider
-    container_name: imageprovider
+    #container_name: imageprovider
     build:
       context: ./
       dockerfile: ./src/imageprovider/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-imageprovider
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 120M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${IMAGE_PROVIDER_PORT}"
@@ -374,16 +402,19 @@ services:
   # Load Generator
   loadgenerator:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-loadgenerator
-    container_name: load-generator
+    #container_name: load-generator
     build:
       context: ./
       dockerfile: ./src/loadgenerator/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-loadgenerator
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 1G
+    cpuset: 0-10
     restart: unless-stopped
     ports:
       - "${LOCUST_WEB_PORT}"
@@ -393,7 +424,7 @@ services:
       - LOCUST_HOST
       - LOCUST_HEADLESS
       - LOCUST_AUTOSTART
-      - LOCUST_BROWSER_TRAFFIC_ENABLED=true
+      - LOCUST_BROWSER_TRAFFIC_ENABLED=false
       - OTEL_EXPORTER_OTLP_ENDPOINT
       - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
       - OTEL_RESOURCE_ATTRIBUTES
@@ -412,16 +443,19 @@ services:
   # Payment service
   paymentservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-paymentservice
-    container_name: payment-service
+    #container_name: payment-service
     build:
       context: ./
       dockerfile: ./src/paymentservice/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-paymentservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 120M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${PAYMENT_SERVICE_PORT}"
@@ -443,16 +477,19 @@ services:
   # Product Catalog service
   productcatalogservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-productcatalogservice
-    container_name: product-catalog-service
+    #container_name: product-catalog-service
     build:
       context: ./
       dockerfile: ./src/productcatalogservice/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-productcatalogservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 20M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${PRODUCT_CATALOG_SERVICE_PORT}"
@@ -474,16 +511,19 @@ services:
   # Quote service
   quoteservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-quoteservice
-    container_name: quote-service
+    #container_name: quote-service
     build:
       context: ./
       dockerfile: ./src/quoteservice/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-quoteservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 40M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${QUOTE_SERVICE_PORT}"
@@ -502,16 +542,19 @@ services:
   # Recommendation service
   recommendationservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-recommendationservice
-    container_name: recommendation-service
+    #container_name: recommendation-service
     build:
       context: ./
       dockerfile: ./src/recommendationservice/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-recommendationservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 500M               # This is high to enable supporting the recommendationCache feature flag use case
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${RECOMMENDATION_SERVICE_PORT}"
@@ -538,16 +581,19 @@ services:
   # Shipping service
   shippingservice:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-shippingservice
-    container_name: shipping-service
+    #container_name: shipping-service
     build:
       context: ./
       dockerfile: ./src/shippingservice/Dockerfile
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-shippingservice
     deploy:
+      mode: replicated
+      replicas: 6
       resources:
         limits:
           memory: 20M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${SHIPPING_SERVICE_PORT}"
@@ -568,11 +614,12 @@ services:
   # Flagd, feature flagging service
   flagd:
     image: ghcr.io/open-feature/flagd:v0.10.1
-    container_name: flagd
+    #container_name: flagd
     deploy:
       resources:
         limits:
           memory: 50M
+    cpuset: ${CPUSET}
     environment:
       - FLAGD_OTEL_COLLECTOR_URI=${OTEL_COLLECTOR_HOST}:${OTEL_COLLECTOR_PORT_GRPC}
       - FLAGD_METRICS_EXPORTER=otel
@@ -593,7 +640,7 @@ services:
   # Kafka used by Checkout, Accounting, and Fraud Detection services
   kafka:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-kafka
-    container_name: kafka
+    #container_name: kafka
     build:
       context: ./
       dockerfile: ./src/kafka/Dockerfile
@@ -603,6 +650,7 @@ services:
       resources:
         limits:
           memory: 500M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     environment:
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
@@ -612,7 +660,7 @@ services:
       - OTEL_SERVICE_NAME=kafka
       - KAFKA_HEAP_OPTS=-Xmx250m -Xms250m
     healthcheck:
-      test: nc -z kafka 9092
+      test: nc -z localhost 9092
       start_period: 10s
       interval: 5s
       timeout: 10s
@@ -622,7 +670,7 @@ services:
   # Redis used by Cart service
   redis-cart:
     image: ${REDIS_IMAGE}
-    container_name: redis-cart
+    #container_name: redis-cart
     user: redis
     deploy:
       resources:
@@ -630,7 +678,9 @@ services:
           memory: 20M
     restart: unless-stopped
     ports:
-      - "${REDIS_PORT}"
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    environment:
+      - REDIS_REPLICATION_MODE=master
     logging: *logging
 
 
@@ -640,7 +690,7 @@ services:
   # Jaeger
   jaeger:
     image: ${JAEGERTRACING_IMAGE}
-    container_name: jaeger
+    #container_name: jaeger
     command:
       - "--memory.max-traces=5000"
       - "--query.base-path=/jaeger/ui"
@@ -651,6 +701,7 @@ services:
       resources:
         limits:
           memory: 400M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${JAEGER_SERVICE_PORT}"         # Jaeger UI
@@ -662,11 +713,12 @@ services:
   # Grafana
   grafana:
     image: ${GRAFANA_IMAGE}
-    container_name: grafana
+    #container_name: grafana
     deploy:
       resources:
         limits:
           memory: 100M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     environment:
       - "GF_INSTALL_PLUGINS=grafana-opensearch-datasource"
@@ -680,11 +732,12 @@ services:
   # OpenTelemetry Collector
   otelcol:
     image: ${COLLECTOR_CONTRIB_IMAGE}
-    container_name: otel-col
+    #container_name: otel-col
     deploy:
       resources:
         limits:
           memory: 200M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     command: [ "--config=/etc/otelcol-config.yml", "--config=/etc/otelcol-config-extras.yml" ]
     volumes:
@@ -702,7 +755,7 @@ services:
   # Prometheus
   prometheus:
     image: ${PROMETHEUS_IMAGE}
-    container_name: prometheus
+    #container_name: prometheus
     command:
       - --web.console.templates=/etc/prometheus/consoles
       - --web.console.libraries=/etc/prometheus/console_libraries
@@ -719,6 +772,7 @@ services:
       resources:
         limits:
           memory: 300M
+    cpuset: ${CPUSET}
     restart: unless-stopped
     ports:
       - "${PROMETHEUS_SERVICE_PORT}:${PROMETHEUS_SERVICE_PORT}"
@@ -727,11 +781,12 @@ services:
   # OpenSearch
   opensearch:
     image: ${OPENSEARCH_IMAGE}
-    container_name: opensearch
+    #container_name: opensearch
     deploy:
       resources:
         limits:
           memory: 1G
+    cpuset: ${CPUSET}
     restart: unless-stopped
     environment:
       - cluster.name=demo-cluster
@@ -758,7 +813,7 @@ services:
   # Frontend Tests
   frontendTests:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-frontend-tests
-    container_name: frontend-tests
+    #container_name: frontend-tests
     build:
       context: ./
       dockerfile: ./src/frontend/Dockerfile.cypress
@@ -777,7 +832,7 @@ services:
   # Tracebased Tests
   traceBasedTests:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-traceBasedTests
-    container_name: traceBasedTests
+    #container_name: traceBasedTests
     profiles:
       - tests
     build:
@@ -836,7 +891,7 @@ services:
   tracetest-server:
     image: ${TRACETEST_IMAGE}
     platform: linux/amd64
-    container_name: tracetest-server
+    #container_name: tracetest-server
     profiles:
       - tests
       - odd          # Observabilty-Driven Development (ODD)
@@ -865,7 +920,7 @@ services:
 
   tracetest-postgres:
     image: ${POSTGRES_IMAGE}
-    container_name: tracetest-postgres
+    #container_name: tracetest-postgres
     profiles:
       - tests
       - odd          # Observabilty-Driven Development (ODD)
