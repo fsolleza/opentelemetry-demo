@@ -409,8 +409,6 @@ services:
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-loadgenerator
     deploy:
-      mode: replicated
-      replicas: 6
       resources:
         limits:
           memory: 1G
