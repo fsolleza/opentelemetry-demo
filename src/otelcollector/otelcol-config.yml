@@ -104,6 +104,18 @@ exporters:
       endpoint: "http://opensearch:9200"
       tls:
         insecure: true
+  otlp/otlp-trace:
+    endpoint: 172.17.0.1:50051
+    tls:
+      insecure: true
+  otlp/otlp-logs:
+    endpoint: 172.17.0.1:50052
+    tls:
+      insecure: true
+  otlp/otlp-metrics:
+    endpoint: 172.17.0.1:50053
+    tls:
+      insecure: true
 
 processors:
   batch:
@@ -124,12 +136,12 @@ service:
     traces:
       receivers: [otlp]
       processors: [transform, batch]
-      exporters: [otlp, debug, spanmetrics]
+      exporters: [otlp, debug, spanmetrics, otlp/otlp-trace]
     metrics:
       receivers: [hostmetrics, docker_stats, httpcheck/frontendproxy, otlp, prometheus, redis, spanmetrics]
       processors: [batch]
-      exporters: [otlphttp/prometheus, debug]
+      exporters: [otlphttp/prometheus, debug, otlp/otlp-metrics]
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [opensearch, debug]
+      exporters: [opensearch, debug, otlp/otlp-logs]
